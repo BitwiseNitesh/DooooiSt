@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Pomodoro Timer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- <link rel="stylesheet" href="../static/style/style.css" /> -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    #timer {
+      font-size: 48px;
+      margin: 20px 0;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 5px;
+      cursor: pointer;
+    }
+    #time-input {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <!-- <h1>Pomodoro Timer</h1> -->
+  <input id="time-input" type="number" placeholder="Enter minutes" min="1" />
+  <div id="timer" style="color: darkgrey;">25 : 00</div>
+  <button id="start">Start</button>
+  <button id="pause">Pause</button>
+  <button id="reset">Reset</button>
+
+  <script>
+    let time_interval;
+    let timeLeft = 25 * 60; 
+    let is_running = false;
+
+    const timer_display = document.getElementById('timer');
+    const time_input = document.getElementById('time-input');
+    const start_button = document.getElementById('start');
+    const pause_button = document.getElementById('pause');
+    const reset_button = document.getElementById('reset');
+
+    function update_timer_display() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      timer_display.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    function start_timer() {
+      if (is_running) return;
+
+      const input_minutes = parseInt(time_input.value);
+      if (!isNaN(input_minutes) && input_minutes > 0) {
+        timeLeft = input_minutes * 60;
+      }
+
+      time_input.style.display = 'none';
+
+      is_running = true;
+      update_timer_display();
+      time_interval = setInterval(() => {
+        if (timeLeft > 0) {
+          timeLeft--;
+          update_timer_display();
+        } else {
+          clearInterval(time_interval);
+          alert('Time is up!');
+        }
+      }, 1000);
+    }
+
+    function pause_timer() {
+      clearInterval(time_interval);
+      is_running = false;
+    }
+
+    function reset_timer() {
+      clearInterval(time_interval);
+      is_running = false;
+      timeLeft = 25 * 60;
+      update_timer_display();
+
+      time_input.style.display = 'block';
+    }
+
+    start_button.addEventListener('click', start_timer);
+    pause_button.addEventListener('click', pause_timer);
+    reset_button.addEventListener('click', reset_timer);
+
+    update_timer_display();
+  </script>
+</body>
+</html>
